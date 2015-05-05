@@ -12,8 +12,10 @@ import pygame
 class meditationTimer:
     def __init__(self, dir_sounds, total_inMinutes, interval_inMinutes):
         self.dir_sounds = dir_sounds
-        self.total = 60 * total_inMinutes
-        self.interval = 60 * interval_inMinutes
+        #self.total = 60.0 * total_inMinutes
+        #self.interval = 60.0 * interval_inMinutes
+        self.total = 6.0
+        self.interval = 2.0
 
     def prepSounds(self):
         """ Uses pygame to load sound files """
@@ -28,17 +30,18 @@ class meditationTimer:
         startTime =time.time()
 
         elapsed = 0
-        while True:
-            if elapsed>=self.total:
-                self.bellEnd.play()
-                break
-            elif elapsed%self.interval == 0:
+        while (elapsed<self.total):
+            if elapsed%self.interval == 0:
                 self.bellInterval.play()
+                print "bellInterval"
 
             time.sleep(1)
             elapsed += 1
             print "elapsed: ",elapsed
 
+        # End
+        self.bellEnd.play()
+        print ""
         print "total elapsed: ", elapsed
         print "end-start: ", time.time() - startTime
         print "total diff: ", (time.time() - startTime) - elapsed
