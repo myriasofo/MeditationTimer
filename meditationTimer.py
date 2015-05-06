@@ -27,6 +27,7 @@ class meditationTimer:
         self.bellInterval = pygame.mixer.Sound(self.dir_sounds + "/metalGong.wav")
 
     def printEndingStats(self):
+        """ For debuggging: print time stats """
         diff = time.time() - self.startTime
         print ""
         print "clock diff: ", diff
@@ -36,6 +37,7 @@ class meditationTimer:
         """ 
         Use sleep() to wait 1sec at a time
         All vars are in integer seconds
+        Prints time elapsed 
         """
         self.total = int(self.total)
         self.interval = int(self.interval)
@@ -61,6 +63,7 @@ class meditationTimer:
         """ 
         Use sleep() to wait 1sec at a time
         All vars are in integer seconds
+        Prints time remaining
         """
         self.interval = int(self.interval)
         remain = int(self.total)
@@ -79,6 +82,52 @@ class meditationTimer:
         self.bellEnd.play()
         print "bellEnd"
         self.printEndingStats()
+
+    def runTimer_precise(self):
+        """
+        sleep(1) not accurate bc based on cpu time
+        Instead: sleep in incrememnts, keep checking how long it's been
+        All vars are in float seconds
+        NOTE: time() produces floats in milliseconds
+        """
+        start =self.startTime
+        elapsed = 0.0
+
+        # keep sleeping, until past 1 sec
+        startIncr = time.time()
+        while True:
+            time.sleep(0.001)
+            incr = time.time() - startIncr
+            if incr>=1.0:
+                break
+
+        # NOTE: All vars are in terms of seconds (float)
+        #       Also, secCheck is for debugging
+        #secCheck = 0.0
+        #error = 0.0001
+        #self.bellEnd.play()
+        #elapsed =time.time() - startTime
+
+        #while not (elapsed>self.timerLen):
+            #time.sleep(error*10)
+            #elapsed =time.time() - startTime
+
+            # Don't report time right at start
+            #if elapsed>error:
+
+            ##Report at each second interval
+            #if elapsed%1 > 0 and elapsed%1 <= error:
+            #    print elapsed
+            #    secCheck +=1
+            ##Report at some other interval
+            #if elapsed%self.interval>=0 and elapsed%self.interval<=error:
+            #    #Don't ring bellInterval at end
+            #    if elapsed%self.timerLen>error:
+            #        print "bellInterval rings"
+                    #self.bellInterval.play()
+        #print "bellEnd rings"
+        #self.bellEnd.play()
+
 
 def main():
     dir_sounds = 'C:/Users/Abe/Dropbox/CS/apps/meditationTimer/sounds'
