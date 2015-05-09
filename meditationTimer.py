@@ -12,10 +12,8 @@ import pygame
 class meditationTimer:
     def __init__(self, dir_sounds, total_inMinutes, interval_inMinutes):
         self.dir_sounds = dir_sounds
-        #self.total = 60.0 * total_inMinutes
-        #self.interval = 60.0 * interval_inMinutes
-        self.total = 6.0
-        self.interval = 2.0
+        self.total = 60.0 * total_inMinutes
+        self.interval = 60.0 * interval_inMinutes
         self.startTime = time.time()
         self.prepSounds()
 
@@ -26,6 +24,40 @@ class meditationTimer:
         self.bellEnd = pygame.mixer.Sound(self.dir_sounds + "/shipBell.wav")
         self.bellInterval = pygame.mixer.Sound(self.dir_sounds + "/metalGong.wav")
 
+    def printTime(self,remain):
+        if self.total/60 >
+        mins = remain/60
+        secs = remain%60
+        mins = format(mins, '02')
+        secs = format(secs, '02')
+        print ':'.join([mins, secs])
+
+    def printTime_hr(self,remain):
+        hours = remain/(60*60)
+        mins = (remain%(60*60))/60
+        secs = remain%60
+        hours = str(hours)
+        mins = format(mins, '02')
+        secs = format(secs, '02')
+        print ':'.join([hours, mins, secs])
+
+    def printTime_hr_v2(self,remain):
+        mins = 0
+        hours = 0
+        while True:
+            remain -= 60
+            if remain < 0:
+                remain += 60
+                break
+            mins += 1
+            if mins == 60:
+                mins =0
+                hours += 1
+        hours = str(hours)
+        mins = format(mins, '02')
+        secs = format(remain, '02')
+        print ':'.join([hours, mins, secs])
+
     def printEndingStats(self):
         """ For debuggging: print time stats """
         diff = time.time() - self.startTime
@@ -33,58 +65,32 @@ class meditationTimer:
         print "clock diff: ", diff
         print "error: ", diff-self.total
 
-    def runTimer_int_elapsed(self):
+    def runTimer(self):
         """ 
-        Use sleep() to wait 1sec at a time
         All vars are in integer seconds
+        Use sleep() to wait 1sec at a time
         Prints time elapsed 
         """
         self.total = int(self.total)
         self.interval = int(self.interval)
 
-        print "elapsed: 0"
         elapsed = 0
         while (elapsed<self.total):
+            self.printTime(self.total - elapsed)
 
             if elapsed%self.interval == 0:
                 self.bellInterval.play()
-                print "bellInterval"
 
             time.sleep(1)
             elapsed += 1
-            print "elapsed: ", elapsed
 
         # End
+        self.printTime(0)
         self.bellEnd.play()
-        print "bellEnd"
-        self.printEndingStats()
-
-    def runTimer_int_remain(self):
-        """ 
-        Use sleep() to wait 1sec at a time
-        All vars are in integer seconds
-        Prints time remaining
-        """
-        self.interval = int(self.interval)
-        remain = int(self.total)
-        print "remain: ", remain
-
-        while (remain>0):
-            if remain%self.interval == 0:
-                self.bellInterval.play()
-                print "bellInterval"
-
-            time.sleep(1)
-            remain -= 1
-            print "remain: ", remain
-
-        # End
-        self.bellEnd.play()
-        print "bellEnd"
-        self.printEndingStats()
 
     def runTimer_precise(self):
         """
+        NOTE: work in progress
         sleep(1) not accurate bc based on cpu time
         Instead: sleep in incrememnts, keep checking how long it's been
         All vars are in float seconds
@@ -128,13 +134,17 @@ class meditationTimer:
         #print "bellEnd rings"
         #self.bellEnd.play()
 
-
 def main():
     dir_sounds = 'C:/Users/Abe/Dropbox/CS/apps/meditationTimer/sounds'
-    total_inMins = 10
-    interval_inMins = 1
-    t =meditationTimer(dir_sounds, total_inMins, interval_inMins)
-    t.runTimer_int_elapsed()
+    mins = 10
+    interval = 1
+    mins = (60*3+33)/60.0
+    interval =6/60.0
+    mins =13/60.0
+    interval =5/60.0
+    t = meditationTimer(dir_sounds, mins, interval)
+    t.runTimer()
+    t.printEndingStats()
     #t.runTimer()
     #t.runTimer_int_remain()
 
